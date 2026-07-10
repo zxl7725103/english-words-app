@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#22C55E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="英语单词">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <title>小学英语单词学习</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+  --color-primary: #22C55E;
+  --color-primary-light: #4ADE80;
+  --color-primary-lighter: #BBF7D0;
+  --color-primary-lightest: #DCFCE7;
+  --color-primary-dark: #16A34A;
+  --color-primary-darker: #15803D;
+  --color-background: #FAFFFE;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #F0FDF4;
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  --color-text-primary: #1E293B;
+  --color-text-secondary: #64748B;
+  --color-text-tertiary: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+  --color-accent-warm: #FB923C;
+  --color-accent-warm-light: #FED7AA;
+  --color-accent-blue: #38BDF8;
+  --color-accent-blue-light: #BAE6FD;
+  --color-accent-pink: #F472B6;
+  --color-accent-pink-light: #FBCFE8;
+  --state-success: #22C55E;
+  --state-warning: #F59E0B;
+  --state-error: #EF4444;
+  --state-info: #38BDF8;
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.05);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.03), 0 0 0 1px var(--color-border-light);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.06), 0 0 0 1px var(--color-border-light);
+  --font-sans: 'Inter', 'PingFang SC', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Baloo 2', 'PingFang SC', 'Noto Sans SC', cursive, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Page transitions */
+.page { display: none; padding-bottom: 80px; animation: fadeIn 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ========== TAB BAR ========== */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+.tab-bar-inner {
+  display: flex; justify-content: space-around; align-items: center;
+  height: 56px; max-width: 430px; margin: 0 auto;
+}
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  text-decoration: none; flex: 1; padding: 4px 0; cursor: pointer;
+  color: var(--color-text-tertiary); transition: color var(--transition-fast);
+  background: none; border: none; font-family: var(--font-sans);
+}
+.tab-item.active { color: var(--color-primary); }
+.tab-item.active svg { stroke: var(--color-primary); }
+.tab-item svg { transition: color var(--transition-fast); }
+.tab-item span { font-size: var(--text-xs); font-weight: var(--font-medium); }
+
+/* ========== HOME PAGE ========== */
+.daily-word-card {
+  border-radius: var(--radius-lg); padding: var(--space-6); position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #15803D 0%, #22C55E 45%, #4ADE80 100%);
+  box-shadow: 0 4px 20px rgba(34,197,94,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.leaf-pattern {
+  position: absolute; inset: 0; opacity: 0.06; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 6C18 12 10 18 13 30C15 38 24 42 24 42C24 42 33 38 35 30C38 18 30 12 24 6Z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: repeat; background-size: 48px 48px;
+}
+.category-card {
+  background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-4);
+  text-decoration: none; display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-2); box-shadow: var(--shadow-card); cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  border: none; font-family: var(--font-sans);
+}
+.category-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+.category-card:active { transform: translateY(0); box-shadow: var(--shadow-card); }
+
+/* ========== LEARN PAGE ========== */
+.word-card-learn {
+  background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-6);
+  text-align: center; box-shadow: var(--shadow-card); position: relative; z-index: 1;
+  transition: transform var(--transition-base);
+}
+.word-card-learn:hover { transform: translateY(-2px); }
+.word-card-float {
+  position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
+  width: 85%; height: 24px;
+  background: radial-gradient(ellipse at center, rgba(34,197,94,0.15) 0%, rgba(34,197,94,0.05) 40%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.audio-btn {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: var(--radius-full);
+  background: var(--color-primary); border: none; cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.audio-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(34,197,94,0.3); }
+.audio-btn:active { transform: scale(0.98); }
+@keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(1.8); opacity: 0; } }
+.audio-pulse-ring {
+  position: absolute; inset: 0; border-radius: var(--radius-full);
+  border: 2px solid var(--color-primary); animation: pulse-ring 2s cubic-bezier(0.4,0,0.2,1) infinite;
+}
+.cta-primary {
+  background: var(--color-primary); color: var(--color-text-inverse);
+  font-size: var(--text-base); font-weight: var(--font-semibold); font-family: var(--font-sans);
+  border: none; cursor: pointer; width: 100%; padding: var(--space-3) 0;
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+.cta-primary:hover { background: var(--color-primary-dark); transform: translateY(-1px); }
+.cta-primary:active { transform: translateY(0); }
+.back-btn {
+  background: transparent; border: none; cursor: pointer;
+  transition: background-color var(--transition-fast);
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: var(--radius-md); flex-shrink: 0;
+}
+.back-btn:hover { background: var(--color-primary-lightest); }
+.link-secondary {
+  color: var(--color-text-tertiary); font-size: var(--text-sm);
+  text-decoration: none; cursor: pointer; background: none; border: none;
+  font-family: var(--font-sans); transition: color var(--transition-fast);
+}
+.link-secondary:hover { color: var(--color-text-secondary); }
+
+/* ========== CHALLENGE PAGE ========== */
+.answer-slot {
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  border: 2px dashed var(--color-border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  transition: transform 200ms cubic-bezier(.3,0,0,1), background-color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
+}
+.answer-slot.filled {
+  border: 2px solid var(--color-primary); background: var(--color-primary-lightest);
+  color: var(--color-primary-darker); animation: slot-fill 300ms cubic-bezier(.3,0,0,1);
+}
+.answer-slot.correct { border-color: var(--state-success); background: #DCFCE7; color: var(--color-primary-darker); }
+.answer-slot.wrong { border-color: var(--state-error); background: #FEE2E2; color: #991B1B; animation: shake 0.4s ease; }
+@keyframes slot-fill { 0% { transform: scale(1.2); opacity: 0.6; } 60% { transform: scale(0.95); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+
+.letter-tile {
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  background: var(--color-surface); box-shadow: var(--shadow-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--font-bold);
+  color: var(--color-text-primary); cursor: pointer; border: none;
+  transition: transform 160ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease;
+}
+.letter-tile:active { transform: scale(1.12) !important; }
+.letter-tile.used { opacity: 0.35; color: var(--color-text-tertiary); }
+.feedback-text {
+  font-size: var(--text-xl); font-weight: var(--font-semibold);
+  color: var(--color-accent-warm); font-family: var(--font-sans);
+  animation: pop-in 400ms cubic-bezier(.2,.8,.2,1);
+}
+.feedback-text.wrong-fb { color: var(--state-error); }
+@keyframes pop-in { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+
+.cta-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 40px; border-radius: var(--radius-full);
+  background: var(--color-primary); color: var(--color-text-inverse);
+  font-size: var(--text-base); font-weight: var(--font-semibold); font-family: var(--font-sans);
+  border: none; cursor: pointer; white-space: nowrap;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(34,197,94,0.25);
+}
+.cta-button:active { transform: scale(0.97); background: var(--color-primary-dark); }
+.cta-button-secondary {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 40px; border-radius: var(--radius-full);
+  background: var(--color-surface); color: var(--color-text-primary);
+  font-size: var(--text-base); font-weight: var(--font-semibold); font-family: var(--font-sans);
+  border: 1px solid var(--color-border); cursor: pointer; white-space: nowrap;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-card);
+}
+.cta-button-secondary:active { transform: scale(0.97); }
+
+/* Challenge category selector */
+.cat-option {
+  background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-4);
+  display: flex; align-items: center; gap: var(--space-3); cursor: pointer;
+  box-shadow: var(--shadow-card); border: 2px solid transparent;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  font-family: var(--font-sans);
+}
+.cat-option:hover { box-shadow: var(--shadow-card-hover); }
+.cat-option.selected { border-color: var(--color-primary); background: var(--color-primary-lightest); }
+
+/* Result stars */
+.star-display { font-size: 40px; line-height: 1; display: flex; gap: 8px; justify-content: center; }
+.star-display .star { color: var(--color-border); transition: color 0.3s ease; }
+.star-display .star.earned { color: #FBBF24; }
+
+/* ========== PROGRESS PAGE ========== */
+.progress-track { width: 100%; height: 8px; background: var(--color-primary-lightest); border-radius: var(--radius-full); overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: var(--color-primary); border-radius: var(--radius-full); transition: width 0.6s cubic-bezier(.3,0,0,1); }
+.badge-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.badge-circle {
+  width: 56px; height: 56px; border-radius: var(--radius-full);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; border: 3px solid var(--ring-color, var(--color-border));
+  background: var(--color-surface); transition: transform 0.2s ease;
+}
+.badge-earned .badge-circle { box-shadow: 0 0 12px 2px color-mix(in srgb, var(--ring-color) 30%, transparent); }
+.badge-earned:hover .badge-circle { transform: scale(1.08); }
+.badge-circle-locked { border-color: var(--color-border); box-shadow: none; }
+.badge-label { font-size: var(--text-xs); color: var(--color-text-primary); font-weight: var(--font-medium); white-space: nowrap; }
+.badge-label-locked { color: var(--color-text-tertiary); }
+.chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 100px; gap: 8px; }
+.chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+.chart-bar {
+  width: 100%; max-width: 32px; border-radius: 6px 6px 0 0;
+  background: var(--color-primary-lighter); height: 0; margin-top: auto;
+  transition: height 0.5s cubic-bezier(.3,0,0,1);
+}
+.chart-bar-today { background: var(--color-primary); animation: bar-pulse 2s ease-in-out infinite; }
+.chart-day { font-size: var(--text-xs); color: var(--color-text-tertiary); font-weight: var(--font-medium); }
+.chart-day-today { color: var(--color-primary); font-weight: var(--font-semibold); }
+@keyframes bar-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* ========== UTILITIES ========== */
+.quick-action-btn {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2); padding: var(--space-3) var(--space-4);
+  background: var(--color-accent-warm); color: var(--color-text-inverse);
+  border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: var(--font-semibold);
+  text-decoration: none; white-space: nowrap; cursor: pointer; border: none; font-family: var(--font-sans);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+.quick-action-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.quick-action-btn:active { opacity: 1; transform: translateY(0); }
+.quick-action-btn-secondary {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2); padding: var(--space-3) var(--space-4);
+  background: var(--color-surface); color: var(--color-text-primary);
+  border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: var(--font-semibold);
+  text-decoration: none; white-space: nowrap; cursor: pointer; border: none; font-family: var(--font-sans);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.quick-action-btn-secondary:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
+.quick-action-btn-secondary:active { box-shadow: var(--shadow-card); transform: translateY(0); }
+
+@media (hover: none) {
+  .category-card:hover, .word-card-learn:hover, .quick-action-btn:hover,
+  .quick-action-btn-secondary:hover { transform: none; }
+  .quick-action-btn-secondary:hover { box-shadow: var(--shadow-card); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page { animation: none; }
+  .audio-pulse-ring, .chart-bar-today { animation: none; }
+  .progress-fill, .chart-bar { transition: none; }
+  .answer-slot.filled, .feedback-text, .letter-tile, .cta-button, .cta-primary { animation: none; transition-duration: 0.01ms; }
+}
+    </style>
+</head>
+<body>
+<div id="app-container">
+
+<!-- ==================== HOME PAGE ==================== -->
+<div id="page-home" class="page active">
+  <section style="padding:var(--space-4) var(--space-4) 0;">
+    <div style="display:flex;align-items:center;gap:var(--space-3);">
+      <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--color-primary-lighter);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👦</div>
+      <div style="flex:1;min-width:0;">
+        <p id="greeting-text" style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:var(--font-semibold);color:var(--color-text-primary);line-height:var(--leading-tight);margin:0;">你好，小明</p>
+        <p id="streak-text" style="font-size:var(--text-sm);color:var(--color-accent-warm);font-weight:var(--font-medium);margin:var(--space-1) 0 0;">连续学习 0 天 🔥</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:var(--space-5) var(--space-4) 0;">
+    <div class="daily-word-card">
+      <div class="leaf-pattern" aria-hidden="true"></div>
+      <div style="position:relative;z-index:1;">
+        <p style="font-size:var(--text-sm);color:rgba(255,255,255,0.85);font-weight:var(--font-medium);margin:0 0 var(--space-3);">今日单词</p>
+        <div style="display:flex;align-items:center;gap:var(--space-4);">
+          <div id="home-emoji" style="font-size:56px;line-height:1;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.1));">🍎</div>
+          <div style="flex:1;min-width:0;">
+            <p id="home-word" style="font-family:var(--font-display);font-size:var(--text-3xl);font-weight:var(--font-bold);color:var(--color-text-inverse);margin:0;line-height:var(--leading-tight);">apple</p>
+            <p id="home-phonetic" style="font-size:var(--text-sm);color:rgba(255,255,255,0.75);margin:var(--space-1) 0 0;font-style:italic;">/ˈæp.əl/</p>
+            <p id="home-meaning" style="font-size:var(--text-base);color:var(--color-text-inverse);margin:var(--space-2) 0 0;font-weight:var(--font-medium);">苹果</p>
+          </div>
+          <button id="home-speak-btn" aria-label="播放发音" style="width:42px;height:42px;border-radius:var(--radius-full);background:rgba(255,255,255,0.2);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background var(--transition-fast);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </button>
+        </div>
+        <button id="home-start-learn" style="display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);margin-top:var(--space-5);padding:var(--space-3) var(--space-6);background:var(--color-surface);color:var(--color-primary-darker);border-radius:var(--radius-full);font-size:var(--text-base);font-weight:var(--font-semibold);text-decoration:none;white-space:nowrap;transition:transform var(--transition-fast),box-shadow var(--transition-fast);cursor:pointer;border:none;font-family:var(--font-sans);">
+          开始学习
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:var(--space-6) var(--space-4) 0;">
+    <h2 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--font-semibold);color:var(--color-text-primary);margin:0 0 var(--space-4);">单词分类</h2>
+    <div id="category-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);"></div>
+  </section>
+
+  <section style="padding:var(--space-6) var(--space-4) 0;">
+    <div style="display:flex;gap:var(--space-3);">
+      <button class="quick-action-btn" id="btn-go-challenge">拼写挑战</button>
+      <button class="quick-action-btn-secondary" id="btn-go-review">复习单词</button>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== LEARN PAGE ==================== -->
+<div id="page-learn" class="page">
+  <main style="padding:var(--space-4) var(--space-4) 0;">
+    <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
+      <button class="back-btn" id="learn-back-btn" aria-label="返回">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="color:var(--color-text-tertiary);font-size:var(--text-xs);font-weight:var(--font-medium);">学习进度</span>
+          <span id="learn-progress-text" style="color:var(--color-text-primary);font-size:var(--text-sm);font-weight:var(--font-semibold);">1/10</span>
+        </div>
+        <div style="width:100%;height:6px;border-radius:var(--radius-full);overflow:hidden;background:var(--color-primary-lightest);">
+          <div id="learn-progress-bar" style="height:100%;border-radius:var(--radius-full);background:var(--color-primary);transition:width 0.4s ease;width:10%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1: Show emoji + meaning, ask user to guess -->
+    <div id="learn-step1" style="display:none;padding:var(--space-4) 0;transition:opacity 0.3s ease;">
+      <div style="position:relative;margin-bottom:var(--space-8);">
+        <div class="word-card-learn" style="text-align:center;">
+          <div style="margin-bottom:var(--space-4);line-height:1;">
+            <span id="learn-s1-emoji" style="font-size:80px;">🍎</span>
+          </div>
+          <p id="learn-s1-meaning" style="font-size:var(--text-2xl);font-weight:var(--font-semibold);color:var(--color-text-primary);margin-bottom:var(--space-6);">苹果</p>
+          <div style="background:var(--color-primary-lightest);border-radius:var(--radius-md);padding:var(--space-6);margin-bottom:var(--space-4);">
+            <p style="font-size:var(--text-sm);color:var(--color-primary-dark);font-weight:var(--font-medium);text-align:center;">这个单词怎么拼？</p>
+            <p id="learn-s1-hint" style="font-size:var(--text-xs);color:var(--color-text-tertiary);text-align:center;margin-top:var(--space-2);">提示：共 <span id="learn-s1-len">5</span> 个字母，首字母 <span id="learn-s1-first">a</span></p>
+          </div>
+        </div>
+        <div class="word-card-float"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <button class="cta-primary" id="learn-reveal-btn">我记住了，揭晓答案</button>
+        <button class="link-secondary" id="learn-forget-btn">不认识，直接看答案</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Show full word card -->
+    <div id="learn-step2" style="display:none;padding:0 var(--space-4);">
+      <div style="position:relative;margin-bottom:var(--space-8);">
+        <div class="word-card-learn">
+          <div style="margin-bottom:var(--space-4);line-height:1;">
+            <span id="learn-emoji" style="font-size:80px;">🍎</span>
+          </div>
+          <h1 id="learn-word" style="font-family:var(--font-display);font-size:36px;font-weight:var(--font-bold);color:var(--color-text-primary);line-height:var(--leading-tight);">apple</h1>
+          <p id="learn-phonetic" style="margin-top:var(--space-1);font-size:var(--text-base);color:var(--color-text-tertiary);">/ˈæp.əl/</p>
+          <div style="display:flex;justify-content:center;margin:var(--space-5) 0;">
+            <button class="audio-btn" id="learn-speak-btn" aria-label="播放发音">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:relative;z-index:1;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              <span class="audio-pulse-ring"></span>
+            </button>
+          </div>
+          <span id="learn-meaning" style="display:inline-block;padding:var(--space-1) var(--space-4);border-radius:var(--radius-full);background:var(--color-primary-lightest);color:var(--color-primary-dark);font-size:var(--text-sm);font-weight:var(--font-medium);">苹果</span>
+        </div>
+        <div class="word-card-float"></div>
+      </div>
+
+      <div style="background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-8);box-shadow:var(--shadow-card);">
+        <p id="learn-example-en" style="font-size:var(--text-base);color:var(--color-text-primary);line-height:var(--leading-relaxed);">I eat an 🍎 apple every day.</p>
+        <p id="learn-example-cn" style="margin-top:var(--space-2);font-size:var(--text-sm);color:var(--color-text-secondary);line-height:var(--leading-relaxed);">我每天吃一个苹果。</p>
+      </div>
+
+      <div id="learn-actions" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
+        <button class="cta-primary" id="learn-next-btn">下一个单词</button>
+        <button class="link-secondary" id="learn-easy-btn">太简单了</button>
+      </div>
+    </div>
+
+    <div id="learn-complete" style="display:none;text-align:center;padding:var(--space-12) var(--space-4);">
+      <div style="font-size:64px;margin-bottom:var(--space-4);">🎉</div>
+      <h2 style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-text-primary);margin-bottom:var(--space-2);">学习完成！</h2>
+      <p id="learn-complete-summary" style="font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--space-8);">你已经学习了本轮所有单词</p>
+      <button class="cta-primary" id="learn-done-btn" style="max-width:200px;margin:0 auto;">返回首页</button>
+    </div>
+  </main>
+</div>
+
+<!-- ==================== CHALLENGE PAGE ==================== -->
+<div id="page-challenge" class="page">
+  <!-- Challenge Start Screen -->
+  <div id="challenge-start" style="padding:var(--space-8) var(--space-4);">
+    <div style="text-align:center;margin-bottom:var(--space-8);">
+      <div style="font-size:64px;margin-bottom:var(--space-3);">⭐</div>
+      <h1 style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-text-primary);margin-bottom:var(--space-2);">拼写挑战</h1>
+      <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">选择分类开始挑战，每轮 10 题</p>
+    </div>
+    <div id="challenge-cat-list" style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-8);"></div>
+    <button class="cta-primary" id="challenge-start-btn" style="opacity:0.5;pointer-events:none;">开始挑战</button>
+  </div>
+
+  <!-- Challenge Play Screen -->
+  <div id="challenge-play" style="display:none;">
+    <section style="padding:var(--space-5) var(--space-4) var(--space-2);">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span id="challenge-qnum" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;">第 1 题 / 共 10 题</span>
+        <span id="challenge-timer" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;">⏱ 0:00</span>
+        <span id="challenge-stars-display" style="font-size:var(--text-sm);color:var(--color-accent-warm);white-space:nowrap;">⭐⭐⭐</span>
+      </div>
+    </section>
+    <section style="padding:var(--space-2) var(--space-4) var(--space-4);">
+      <div id="challenge-question-card" style="display:flex;flex-direction:column;align-items:center;border-radius:var(--radius-lg);background:var(--color-surface);padding:var(--space-8) var(--space-6);box-shadow:var(--shadow-card);">
+        <span id="challenge-emoji" style="font-size:60px;line-height:1;" aria-hidden="true">🍎</span>
+        <span id="challenge-hint" style="margin-top:var(--space-3);font-size:var(--text-lg);color:var(--color-text-secondary);font-family:var(--font-sans);">苹果</span>
+      </div>
+    </section>
+    <section style="padding:var(--space-3) var(--space-4);">
+      <div id="challenge-slots" style="display:flex;justify-content:center;gap:var(--space-3);flex-wrap:wrap;"></div>
+    </section>
+    <section style="padding:var(--space-4) var(--space-4);">
+      <div id="challenge-tiles" style="display:grid;max-width:260px;margin:0 auto;grid-template-columns:repeat(5,1fr);gap:var(--space-3);justify-items:center;"></div>
+    </section>
+    <section id="challenge-feedback-area" style="display:none;flex-direction:column;align-items:center;gap:var(--space-4);padding:var(--space-6) var(--space-4) var(--space-4);">
+      <p id="challenge-feedback-text" class="feedback-text">太棒了！✨</p>
+      <button class="cta-button" id="challenge-next-btn" type="button">下一题</button>
+    </section>
+  </div>
+
+  <!-- Challenge Result Screen -->
+  <div id="challenge-result" style="display:none;padding:var(--space-12) var(--space-4);text-align:center;">
+    <div id="result-stars" class="star-display" style="margin-bottom:var(--space-4);"></div>
+    <h2 id="result-title" style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-text-primary);margin-bottom:var(--space-2);">挑战完成！</h2>
+    <p id="result-score" style="font-size:var(--text-lg);color:var(--color-text-secondary);margin-bottom:var(--space-2);">正确 8/10</p>
+    <p id="result-time" style="font-size:var(--text-sm);color:var(--color-text-tertiary);margin-bottom:var(--space-8);">用时 1:23</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3);align-items:center;">
+      <button class="cta-primary" id="result-retry-btn" style="max-width:240px;">再来一次</button>
+      <button class="cta-button-secondary" id="result-home-btn" style="max-width:240px;">返回首页</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROGRESS PAGE ==================== -->
+<div id="page-progress" class="page">
+  <section style="padding:var(--space-5) var(--space-4) var(--space-3);">
+    <div style="display:flex;align-items:center;gap:var(--space-3);">
+      <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--color-primary-lighter);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👦</div>
+      <div>
+        <h1 style="font-size:var(--text-xl);font-weight:var(--font-semibold);color:var(--color-text-primary);line-height:var(--leading-tight);margin:0;">我的学习</h1>
+        <span style="font-size:var(--text-sm);color:var(--color-text-secondary);">小明</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:0 var(--space-4) var(--space-4);">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="background:var(--color-surface);border-radius:var(--radius-md);padding:12px 8px;text-align:center;box-shadow:var(--shadow-card);">
+        <div id="stat-learned" style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-primary);line-height:1.2;">0</div>
+        <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;white-space:nowrap;">已学单词</div>
+      </div>
+      <div style="background:var(--color-surface);border-radius:var(--radius-md);padding:12px 8px;text-align:center;box-shadow:var(--shadow-card);">
+        <div id="stat-streak" style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-accent-warm);line-height:1.2;">0<span style="font-size:var(--text-sm);font-weight:var(--font-medium);">天</span></div>
+        <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;white-space:nowrap;">连续打卡</div>
+      </div>
+      <div style="background:var(--color-surface);border-radius:var(--radius-md);padding:12px 8px;text-align:center;box-shadow:var(--shadow-card);">
+        <div id="stat-accuracy" style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--color-accent-blue);line-height:1.2;">0<span style="font-size:var(--text-sm);font-weight:var(--font-medium);">%</span></div>
+        <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;white-space:nowrap;">正确率</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding:0 var(--space-4) var(--space-5);">
+    <h2 style="font-size:var(--text-base);font-weight:var(--font-semibold);color:var(--color-text-primary);margin:0 0 var(--space-3);">单词本</h2>
+    <div id="wordbook-progress" style="background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-4);box-shadow:var(--shadow-card);display:flex;flex-direction:gap:14px;flex-direction:column;"></div>
+  </section>
+
+  <section style="padding:0 var(--space-4) var(--space-5);">
+    <h2 style="font-size:var(--text-base);font-weight:var(--font-semibold);color:var(--color-text-primary);margin:0 0 var(--space-3);">成就徽章</h2>
+    <div id="badges-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);"></div>
+  </section>
+
+  <section style="padding:0 var(--space-4) var(--space-5);">
+    <h2 style="font-size:var(--text-base);font-weight:var(--font-semibold);color:var(--color-text-primary);margin:0 0 var(--space-3);">本周学习</h2>
+    <div style="background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-4);box-shadow:var(--shadow-card);">
+      <div id="weekly-chart" class="chart-bars"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== TAB BAR ==================== -->
+<nav class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-item active" data-tab="home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>首页</span>
+    </button>
+    <button class="tab-item" data-tab="learn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span>学习</span>
+    </button>
+    <button class="tab-item" data-tab="challenge">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>挑战</span>
+    </button>
+    <button class="tab-item" data-tab="progress">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      <span>进度</span>
+    </button>
+  </div>
+</nav>
+
+</div><!-- end app-container -->
+
+<script>
+// ===================== WORD DATABASE =====================
+const WORDS = [
+  // ---- Animals (32) ----
+  {word:'cat',phonetic:'/kæt/',meaning:'猫',emoji:'🐱',example_en:'The 🐱 cat is sleeping on the sofa.',example_cn:'猫正在沙发上睡觉。',category:'animals',difficulty:1},
+  {word:'dog',phonetic:'/dɒɡ/',meaning:'狗',emoji:'🐶',example_en:'I have a loyal 🐶 dog at home.',example_cn:'我家里有一只忠诚的狗。',category:'animals',difficulty:1},
+  {word:'bird',phonetic:'/bɜːrd/',meaning:'鸟',emoji:'🐦',example_en:'A little 🐦 bird sings in the tree.',example_cn:'一只小鸟在树上唱歌。',category:'animals',difficulty:1},
+  {word:'fish',phonetic:'/fɪʃ/',meaning:'鱼',emoji:'🐟',example_en:'The 🐟 fish swims in the pond.',example_cn:'鱼在池塘里游。',category:'animals',difficulty:1},
+  {word:'rabbit',phonetic:'/ˈræb.ɪt/',meaning:'兔子',emoji:'🐰',example_en:'The 🐰 rabbit eats a carrot.',example_cn:'兔子吃胡萝卜。',category:'animals',difficulty:1},
+  {word:'elephant',phonetic:'/ˈel.ɪ.fənt/',meaning:'大象',emoji:'🐘',example_en:'The 🐘 elephant is very big.',example_cn:'大象非常大。',category:'animals',difficulty:2},
+  {word:'lion',phonetic:'/ˈlaɪ.ən/',meaning:'狮子',emoji:'🦁',example_en:'The 🦁 lion is the king of the jungle.',example_cn:'狮子是丛林之王。',category:'animals',difficulty:2},
+  {word:'tiger',phonetic:'/ˈtaɪ.ɡər/',meaning:'老虎',emoji:'🐯',example_en:'The 🐯 tiger has orange stripes.',example_cn:'老虎有橙色的条纹。',category:'animals',difficulty:2},
+  {word:'monkey',phonetic:'/ˈmʌŋ.ki/',meaning:'猴子',emoji:'🐵',example_en:'The 🐵 monkey climbs the tree.',example_cn:'猴子爬树。',category:'animals',difficulty:2},
+  {word:'panda',phonetic:'/ˈpæn.də/',meaning:'熊猫',emoji:'🐼',example_en:'The 🐼 panda eats bamboo.',example_cn:'熊猫吃竹子。',category:'animals',difficulty:2},
+  {word:'bear',phonetic:'/beər/',meaning:'熊',emoji:'🐻',example_en:'The 🐻 bear sleeps in winter.',example_cn:'熊在冬天睡觉。',category:'animals',difficulty:1},
+  {word:'horse',phonetic:'/hɔːrs/',meaning:'马',emoji:'🐴',example_en:'The 🐴 horse runs fast.',example_cn:'马跑得很快。',category:'animals',difficulty:1},
+  {word:'sheep',phonetic:'/ʃiːp/',meaning:'绵羊',emoji:'🐑',example_en:'The 🐑 sheep eats grass.',example_cn:'绵羊吃草。',category:'animals',difficulty:1},
+  {word:'cow',phonetic:'/kaʊ/',meaning:'奶牛',emoji:'🐄',example_en:'The 🐄 cow gives us milk.',example_cn:'奶牛给我们牛奶。',category:'animals',difficulty:1},
+  {word:'pig',phonetic:'/pɪɡ/',meaning:'猪',emoji:'🐷',example_en:'The 🐷 pig lives on the farm.',example_cn:'猪住在农场里。',category:'animals',difficulty:1},
+  {word:'chicken',phonetic:'/ˈtʃɪk.ɪn/',meaning:'鸡',emoji:'🐔',example_en:'The 🐔 chicken lays eggs.',example_cn:'鸡下蛋。',category:'animals',difficulty:2},
+  {word:'duck',phonetic:'/dʌk/',meaning:'鸭子',emoji:'🦆',example_en:'The 🦆 duck swims in the lake.',example_cn:'鸭子在湖里游泳。',category:'animals',difficulty:1},
+  {word:'frog',phonetic:'/frɒɡ/',meaning:'青蛙',emoji:'🐸',example_en:'The 🐸 frog jumps into the water.',example_cn:'青蛙跳进水里。',category:'animals',difficulty:1},
+  {word:'snake',phonetic:'/sneɪk/',meaning:'蛇',emoji:'🐍',example_en:'The 🐍 snake is long and thin.',example_cn:'蛇又长又细。',category:'animals',difficulty:1},
+  {word:'turtle',phonetic:'/ˈtɜːr.təl/',meaning:'乌龟',emoji:'🐢',example_en:'The 🐢 turtle walks very slowly.',example_cn:'乌龟走得非常慢。',category:'animals',difficulty:2},
+  {word:'whale',phonetic:'/weɪl/',meaning:'鲸鱼',emoji:'🐋',example_en:'The 🐋 whale lives in the ocean.',example_cn:'鲸鱼生活在海洋中。',category:'animals',difficulty:2},
+  {word:'dolphin',phonetic:'/ˈdɒl.fɪn/',meaning:'海豚',emoji:'🐬',example_en:'The 🐬 dolphin is very smart.',example_cn:'海豚非常聪明。',category:'animals',difficulty:3},
+  {word:'bee',phonetic:'/biː/',meaning:'蜜蜂',emoji:'🐝',example_en:'The 🐝 bee makes honey.',example_cn:'蜜蜂酿蜜。',category:'animals',difficulty:1},
+  {word:'butterfly',phonetic:'/ˈbʌt.ər.flaɪ/',meaning:'蝴蝶',emoji:'🦋',example_en:'The 🦋 butterfly is beautiful.',example_cn:'蝴蝶很美丽。',category:'animals',difficulty:3},
+  {word:'ant',phonetic:'/ænt/',meaning:'蚂蚁',emoji:'🐜',example_en:'The 🐜 ant is very small.',example_cn:'蚂蚁非常小。',category:'animals',difficulty:1},
+  {word:'spider',phonetic:'/ˈspaɪ.dər/',meaning:'蜘蛛',emoji:'🕷️',example_en:'The 🕷️ spider spins a web.',example_cn:'蜘蛛结网。',category:'animals',difficulty:2},
+  {word:'mouse',phonetic:'/maʊs/',meaning:'老鼠',emoji:'🐭',example_en:'The 🐭 mouse loves cheese.',example_cn:'老鼠喜欢奶酪。',category:'animals',difficulty:1},
+  {word:'fox',phonetic:'/fɒks/',meaning:'狐狸',emoji:'🦊',example_en:'The 🦊 fox is very clever.',example_cn:'狐狸非常聪明。',category:'animals',difficulty:1},
+  {word:'wolf',phonetic:'/wʊlf/',meaning:'狼',emoji:'🐺',example_en:'The 🐺 wolf howls at night.',example_cn:'狼在夜晚嚎叫。',category:'animals',difficulty:1},
+  {word:'zebra',phonetic:'/ˈzeb.rə/',meaning:'斑马',emoji:'🦓',example_en:'The 🦓 zebra has black and white stripes.',example_cn:'斑马有黑白条纹。',category:'animals',difficulty:2},
+  {word:'giraffe',phonetic:'/dʒɪˈrɑːf/',meaning:'长颈鹿',emoji:'🦒',example_en:'The 🦒 giraffe has a long neck.',example_cn:'长颈鹿有长长的脖子。',category:'animals',difficulty:3},
+  {word:'penguin',phonetic:'/ˈpeŋ.ɡwɪn/',meaning:'企鹅',emoji:'🐧',example_en:'The 🐧 penguin lives in the cold.',example_cn:'企鹅生活在寒冷的地方。',category:'animals',difficulty:2},
+
+  // ---- Food (28) ----
+  {word:'apple',phonetic:'/ˈæp.əl/',meaning:'苹果',emoji:'🍎',example_en:'I eat an 🍎 apple every day.',example_cn:'我每天吃一个苹果。',category:'food',difficulty:1},
+  {word:'banana',phonetic:'/bəˈnæn.ə/',meaning:'香蕉',emoji:'🍌',example_en:'The 🍌 banana is yellow.',example_cn:'香蕉是黄色的。',category:'food',difficulty:1},
+  {word:'orange',phonetic:'/ˈɒr.ɪndʒ/',meaning:'橙子',emoji:'🍊',example_en:'I like to drink 🍊 orange juice.',example_cn:'我喜欢喝橙汁。',category:'food',difficulty:1},
+  {word:'grape',phonetic:'/ɡreɪp/',meaning:'葡萄',emoji:'🍇',example_en:'The 🍇 grape is sweet.',example_cn:'葡萄很甜。',category:'food',difficulty:1},
+  {word:'watermelon',phonetic:'/ˈwɔː.tər.mel.ən/',meaning:'西瓜',emoji:'🍉',example_en:'The 🍉 watermelon is big and green.',example_cn:'西瓜又大又绿。',category:'food',difficulty:3},
+  {word:'strawberry',phonetic:'/ˈstrɔː.bər.i/',meaning:'草莓',emoji:'🍓',example_en:'The 🍓 strawberry is red and sweet.',example_cn:'草莓又红又甜。',category:'food',difficulty:3},
+  {word:'pear',phonetic:'/peər/',meaning:'梨',emoji:'🍐',example_en:'The 🍐 pear is juicy.',example_cn:'梨很多汁。',category:'food',difficulty:1},
+  {word:'peach',phonetic:'/piːtʃ/',meaning:'桃子',emoji:'🍑',example_en:'The 🍑 peach is soft and sweet.',example_cn:'桃子又软又甜。',category:'food',difficulty:1},
+  {word:'mango',phonetic:'/ˈmæŋ.ɡoʊ/',meaning:'芒果',emoji:'🥭',example_en:'The 🥭 mango comes from tropical places.',example_cn:'芒果来自热带地区。',category:'food',difficulty:2},
+  {word:'lemon',phonetic:'/ˈlem.ən/',meaning:'柠檬',emoji:'🍋',example_en:'The 🍋 lemon is very sour.',example_cn:'柠檬非常酸。',category:'food',difficulty:1},
+  {word:'tomato',phonetic:'/təˈmɑː.təʊ/',meaning:'番茄',emoji:'🍅',example_en:'The 🍅 tomato is red.',example_cn:'番茄是红色的。',category:'food',difficulty:2},
+  {word:'potato',phonetic:'/pəˈteɪ.təʊ/',meaning:'土豆',emoji:'🥔',example_en:'The 🥔 potato can be cooked in many ways.',example_cn:'土豆可以有很多种做法。',category:'food',difficulty:2},
+  {word:'carrot',phonetic:'/ˈkær.ət/',meaning:'胡萝卜',emoji:'🥕',example_en:'The 🥕 carrot is good for your eyes.',example_cn:'胡萝卜对眼睛好。',category:'food',difficulty:2},
+  {word:'rice',phonetic:'/raɪs/',meaning:'米饭',emoji:'🍚',example_en:'We eat 🍚 rice every day.',example_cn:'我们每天吃米饭。',category:'food',difficulty:1},
+  {word:'bread',phonetic:'/bred/',meaning:'面包',emoji:'🍞',example_en:'I have 🍞 bread for breakfast.',example_cn:'我早餐吃面包。',category:'food',difficulty:1},
+  {word:'egg',phonetic:'/eɡ/',meaning:'鸡蛋',emoji:'🥚',example_en:'I eat an 🥚 egg in the morning.',example_cn:'我早上吃一个鸡蛋。',category:'food',difficulty:1},
+  {word:'milk',phonetic:'/mɪlk/',meaning:'牛奶',emoji:'🥛',example_en:'I drink 🥛 milk every day.',example_cn:'我每天喝牛奶。',category:'food',difficulty:1},
+  {word:'cake',phonetic:'/keɪk/',meaning:'蛋糕',emoji:'🎂',example_en:'The 🎂 cake looks delicious.',example_cn:'蛋糕看起来很美味。',category:'food',difficulty:1},
+  {word:'cookie',phonetic:'/ˈkʊk.i/',meaning:'饼干',emoji:'🍪',example_en:'I love eating 🍪 cookies.',example_cn:'我喜欢吃饼干。',category:'food',difficulty:2},
+  {word:'candy',phonetic:'/ˈkæn.di/',meaning:'糖果',emoji:'🍬',example_en:'Children love 🍬 candy.',example_cn:'孩子们喜欢糖果。',category:'food',difficulty:2},
+  {word:'ice cream',phonetic:'/aɪs kriːm/',meaning:'冰淇淋',emoji:'🍦',example_en:'I eat 🍦 ice cream in summer.',example_cn:'我在夏天吃冰淇淋。',category:'food',difficulty:2},
+  {word:'juice',phonetic:'/dʒuːs/',meaning:'果汁',emoji:'🧃',example_en:'I like drinking 🧃 juice.',example_cn:'我喜欢喝果汁。',category:'food',difficulty:1},
+  {word:'water',phonetic:'/ˈwɔː.tər/',meaning:'水',emoji:'💧',example_en:'Please drink more 💧 water.',example_cn:'请多喝水。',category:'food',difficulty:1},
+  {word:'tea',phonetic:'/tiː/',meaning:'茶',emoji:'🍵',example_en:'My grandma likes drinking 🍵 tea.',example_cn:'我奶奶喜欢喝茶。',category:'food',difficulty:1},
+  {word:'coffee',phonetic:'/ˈkɒf.i/',meaning:'咖啡',emoji:'☕',example_en:'Dad drinks ☕ coffee in the morning.',example_cn:'爸爸早上喝咖啡。',category:'food',difficulty:2},
+  {word:'chicken',phonetic:'/ˈtʃɪk.ɪn/',meaning:'鸡肉',emoji:'🍗',example_en:'We have 🍗 chicken for dinner.',example_cn:'我们晚餐吃鸡肉。',category:'food',difficulty:2},
+  {word:'fish',phonetic:'/fɪʃ/',meaning:'鱼肉',emoji:'🐟',example_en:'The 🐟 fish tastes great.',example_cn:'鱼肉很好吃。',category:'food',difficulty:1},
+  {word:'soup',phonetic:'/suːp/',meaning:'汤',emoji:'🍲',example_en:'Mom makes delicious 🍲 soup.',example_cn:'妈妈做美味的汤。',category:'food',difficulty:1},
+
+  // ---- Family (24) ----
+  {word:'father',phonetic:'/ˈfɑː.ðər/',meaning:'爸爸',emoji:'👨',example_en:'My 👨 father goes to work every day.',example_cn:'我爸爸每天去上班。',category:'family',difficulty:1},
+  {word:'mother',phonetic:'/ˈmʌð.ər/',meaning:'妈妈',emoji:'👩',example_en:'My 👩 mother cooks dinner.',example_cn:'我妈妈做晚饭。',category:'family',difficulty:1},
+  {word:'brother',phonetic:'/ˈbrʌð.ər/',meaning:'兄弟',emoji:'👦',example_en:'My 👦 brother is taller than me.',example_cn:'我兄弟比我高。',category:'family',difficulty:2},
+  {word:'sister',phonetic:'/ˈsɪs.tər/',meaning:'姐妹',emoji:'👧',example_en:'My 👧 sister likes to read books.',example_cn:'我姐妹喜欢看书。',category:'family',difficulty:2},
+  {word:'grandfather',phonetic:'/ˈɡrænd.fɑː.ðər/',meaning:'爷爷/外公',emoji:'👴',example_en:'My 👴 grandfather tells me stories.',example_cn:'我爷爷给我讲故事。',category:'family',difficulty:3},
+  {word:'grandmother',phonetic:'/ˈɡrænd.mʌð.ər/',meaning:'奶奶/外婆',emoji:'👵',example_en:'My 👵 grandmother makes cookies.',example_cn:'我奶奶做饼干。',category:'family',difficulty:3},
+  {word:'uncle',phonetic:'/ˈʌŋ.kəl/',meaning:'叔叔/舅舅',emoji:'🧑',example_en:'My uncle gives me gifts.',example_cn:'我叔叔给我礼物。',category:'family',difficulty:1},
+  {word:'aunt',phonetic:'/ɑːnt/',meaning:'阿姨/姑姑',emoji:'👩‍🦱',example_en:'My aunt is very kind.',example_cn:'我阿姨非常和蔼。',category:'family',difficulty:1},
+  {word:'cousin',phonetic:'/ˈkʌz.ən/',meaning:'堂/表兄弟姐妹',emoji:'🧒',example_en:'I play with my cousin.',example_cn:'我和堂兄弟一起玩。',category:'family',difficulty:2},
+  {word:'son',phonetic:'/sʌn/',meaning:'儿子',emoji:'👦',example_en:'They have a son.',example_cn:'他们有一个儿子。',category:'family',difficulty:1},
+  {word:'daughter',phonetic:'/ˈdɔː.tər/',meaning:'女儿',emoji:'👧',example_en:'Their daughter is very cute.',example_cn:'他们的女儿很可爱。',category:'family',difficulty:2},
+  {word:'husband',phonetic:'/ˈhʌz.bənd/',meaning:'丈夫',emoji:'🤵',example_en:'Her husband is a doctor.',example_cn:'她的丈夫是医生。',category:'family',difficulty:2},
+  {word:'wife',phonetic:'/waɪf/',meaning:'妻子',emoji:'👰',example_en:'His wife is a teacher.',example_cn:'他的妻子是老师。',category:'family',difficulty:1},
+  {word:'baby',phonetic:'/ˈbeɪ.bi/',meaning:'宝宝',emoji:'👶',example_en:'The 👶 baby is sleeping.',example_cn:'宝宝在睡觉。',category:'family',difficulty:1},
+  {word:'family',phonetic:'/ˈfæm.əl.i/',meaning:'家庭',emoji:'👨‍👩‍👧',example_en:'I love my 👨‍👩‍👧 family.',example_cn:'我爱我的家庭。',category:'family',difficulty:2},
+  {word:'parents',phonetic:'/ˈpeə.rənts/',meaning:'父母',emoji:'👨‍👩',example_en:'My 👨‍👩 parents love me.',example_cn:'我的父母爱我。',category:'family',difficulty:2},
+  {word:'children',phonetic:'/ˈtʃɪl.drən/',meaning:'孩子们',emoji:'👧👦',example_en:'The 👧👦 children are playing.',example_cn:'孩子们在玩耍。',category:'family',difficulty:2},
+  {word:'boy',phonetic:'/bɔɪ/',meaning:'男孩',emoji:'👦',example_en:'The 👦 boy is running.',example_cn:'男孩在跑步。',category:'family',difficulty:1},
+  {word:'girl',phonetic:'/ɡɜːrl/',meaning:'女孩',emoji:'👧',example_en:'The 👧 girl is singing.',example_cn:'女孩在唱歌。',category:'family',difficulty:1},
+  {word:'man',phonetic:'/mæn/',meaning:'男人',emoji:'👨',example_en:'The 👨 man is reading a book.',example_cn:'男人在看书。',category:'family',difficulty:1},
+  {word:'woman',phonetic:'/ˈwʊm.ən/',meaning:'女人',emoji:'👩',example_en:'The 👩 woman is cooking.',example_cn:'女人在做饭。',category:'family',difficulty:1},
+  {word:'people',phonetic:'/ˈpiː.pəl/',meaning:'人们',emoji:'👥',example_en:'Many 👥 people come to the park.',example_cn:'很多人来到公园。',category:'family',difficulty:1},
+  {word:'friend',phonetic:'/frend/',meaning:'朋友',emoji:'🤝',example_en:'My 🤝 friend helps me.',example_cn:'我的朋友帮助我。',category:'family',difficulty:1},
+  {word:'neighbor',phonetic:'/ˈneɪ.bər/',meaning:'邻居',emoji:'🏘️',example_en:'Our 🏘️ neighbor is friendly.',example_cn:'我们的邻居很友好。',category:'family',difficulty:3},
+
+  // ---- Colors (18) ----
+  {word:'red',phonetic:'/red/',meaning:'红色',emoji:'🔴',example_en:'The 🔴 red apple looks nice.',example_cn:'红色的苹果看起来很好。',category:'colors',difficulty:1},
+  {word:'blue',phonetic:'/bluː/',meaning:'蓝色',emoji:'🔵',example_en:'The sky is 🔵 blue.',example_cn:'天空是蓝色的。',category:'colors',difficulty:1},
+  {word:'green',phonetic:'/ɡriːn/',meaning:'绿色',emoji:'🟢',example_en:'The grass is 🟢 green.',example_cn:'草是绿色的。',category:'colors',difficulty:1},
+  {word:'yellow',phonetic:'/ˈjel.oʊ/',meaning:'黄色',emoji:'🟡',example_en:'The sun is 🟡 yellow.',example_cn:'太阳是黄色的。',category:'colors',difficulty:1},
+  {word:'orange',phonetic:'/ˈɒr.ɪndʒ/',meaning:'橙色',emoji:'🟠',example_en:'The 🟠 orange is juicy.',example_cn:'橙子很多汁。',category:'colors',difficulty:1},
+  {word:'purple',phonetic:'/ˈpɜːr.pəl/',meaning:'紫色',emoji:'🟣',example_en:'The 🟣 purple flower is pretty.',example_cn:'紫色的花很漂亮。',category:'colors',difficulty:2},
+  {word:'pink',phonetic:'/pɪŋk/',meaning:'粉色',emoji:'🩷',example_en:'She likes 🩷 pink dresses.',example_cn:'她喜欢粉色的裙子。',category:'colors',difficulty:1},
+  {word:'black',phonetic:'/blæk/',meaning:'黑色',emoji:'⚫',example_en:'The ⚫ black cat is cute.',example_cn:'黑猫很可爱。',category:'colors',difficulty:1},
+  {word:'white',phonetic:'/waɪt/',meaning:'白色',emoji:'⚪',example_en:'The ⚪ white cloud is soft.',example_cn:'白云很柔软。',category:'colors',difficulty:1},
+  {word:'brown',phonetic:'/braʊn/',meaning:'棕色',emoji:'🟤',example_en:'The 🟤 brown dog is big.',example_cn:'棕色的狗很大。',category:'colors',difficulty:1},
+  {word:'gray',phonetic:'/ɡreɪ/',meaning:'灰色',emoji:'🩶',example_en:'The sky is 🩶 gray today.',example_cn:'今天天空是灰色的。',category:'colors',difficulty:1},
+  {word:'gold',phonetic:'/ɡoʊld/',meaning:'金色',emoji:'🌟',example_en:'The 🌟 gold medal shines.',example_cn:'金牌闪闪发光。',category:'colors',difficulty:1},
+  {word:'silver',phonetic:'/ˈsɪl.vər/',meaning:'银色',emoji:'🥈',example_en:'The 🥈 silver ring is beautiful.',example_cn:'银戒指很漂亮。',category:'colors',difficulty:2},
+  {word:'color',phonetic:'/ˈkʌl.ər/',meaning:'颜色',emoji:'🎨',example_en:'What 🎨 color do you like?',example_cn:'你喜欢什么颜色？',category:'colors',difficulty:1},
+  {word:'light',phonetic:'/laɪt/',meaning:'浅色/光',emoji:'💡',example_en:'The 💡 light is bright.',example_cn:'光很明亮。',category:'colors',difficulty:1},
+  {word:'dark',phonetic:'/dɑːrk/',meaning:'深色/暗',emoji:'🌙',example_en:'It is 🌙 dark at night.',example_cn:'晚上很暗。',category:'colors',difficulty:1},
+  {word:'bright',phonetic:'/braɪt/',meaning:'明亮的',emoji:'✨',example_en:'The ✨ bright sun warms us.',example_cn:'明亮的太阳温暖着我们。',category:'colors',difficulty:1},
+  {word:'rainbow',phonetic:'/ˈreɪn.boʊ/',meaning:'彩虹',emoji:'🌈',example_en:'The 🌈 rainbow has many colors.',example_cn:'彩虹有很多颜色。',category:'colors',difficulty:2}
+];
+
+const CATEGORIES = [
+  { key: 'animals', name: '动物 Animals', emoji: '🐾' },
+  { key: 'food',    name: '食物 Food',    emoji: '🍎' },
+  { key: 'family',  name: '家庭 Family',  emoji: '👨‍👩‍👧' },
+  { key: 'colors',  name: '颜色 Colors',  emoji: '🎨' }
+];
+
+const ACHIEVEMENTS = [
+  { id:'beginner',    emoji:'🌟', name:'初学者',  desc:'学习前10个单词',   ringColor:'var(--color-primary)' },
+  { id:'streak7',     emoji:'🔥', name:'连续7天', desc:'连续打卡7天',     ringColor:'var(--color-accent-warm)' },
+  { id:'spelling3',   emoji:'🏆', name:'拼写达人',desc:'在挑战中获得3星', ringColor:'var(--state-warning)' },
+  { id:'words100',    emoji:'📚', name:'百词斩',  desc:'学习100个单词',   ringColor:'var(--color-accent-blue)' },
+  { id:'flash',       emoji:'⚡', name:'闪电侠',  desc:'60秒内完成挑战',  ringColor:'var(--color-accent-pink)' },
+  { id:'king',        emoji:'👑', name:'单词王',  desc:'掌握所有单词',    ringColor:'var(--color-primary-dark)' }
+];
+
+// ===================== STATE MANAGEMENT =====================
+const STORAGE_KEY = 'primary_english_app';
+
+function getDefaultState() {
+  return {
+    learnedWords: [],     // array of word strings
+    masteredWords: [],    // array of word strings
+    streak: 0,
+    lastLearnDate: null,  // 'YYYY-MM-DD'
+    challengeHistory: [], // [{correct, total, time, stars, date, category}]
+    weeklyActivity: {},   // {'YYYY-MM-DD': count}
+    achievements: []      // array of achievement ids
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      return Object.assign(getDefaultState(), s);
+    }
+  } catch(e) {}
+  return getDefaultState();
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+let appState = loadState();
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function updateStreak() {
+  const today = todayStr();
+  if (appState.lastLearnDate === today) return;
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  const yStr = yesterday.getFullYear() + '-' + String(yesterday.getMonth()+1).padStart(2,'0') + '-' + String(yesterday.getDate()).padStart(2,'0');
+  if (appState.lastLearnDate === yStr) {
+    appState.streak += 1;
+  } else if (appState.lastLearnDate !== today) {
+    appState.streak = 1;
+  }
+  appState.lastLearnDate = today;
+  saveState(appState);
+}
+
+function recordWordLearned(wordStr) {
+  if (!appState.learnedWords.includes(wordStr)) {
+    appState.learnedWords.push(wordStr);
+    const today = todayStr();
+    updateStreak();
+    appState.weeklyActivity[today] = (appState.weeklyActivity[today] || 0) + 1;
+    checkAchievements();
+    saveState(appState);
+  }
+}
+
+function recordWordMastered(wordStr) {
+  if (!appState.masteredWords.includes(wordStr)) {
+    appState.masteredWords.push(wordStr);
+    checkAchievements();
+    saveState(appState);
+  }
+}
+
+function checkAchievements() {
+  const earned = appState.achievements;
+  if (!earned.includes('beginner') && appState.learnedWords.length >= 10) earned.push('beginner');
+  if (!earned.includes('streak7') && appState.streak >= 7) earned.push('streak7');
+  if (!earned.includes('spelling3') && appState.challengeHistory.some(h => h.stars === 3)) earned.push('spelling3');
+  var uniqueCount = new Set(WORDS.map(function(w){return w.word;})).size;
+  if (!earned.includes('words100') && appState.learnedWords.length >= 90) earned.push('words100');
+  if (!earned.includes('flash') && appState.challengeHistory.some(h => h.time <= 60)) earned.push('flash');
+  if (!earned.includes('king') && appState.masteredWords.length >= uniqueCount) earned.push('king');
+  appState.achievements = earned;
+}
+
+// ===================== SPEECH =====================
+function speakWord(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.8;
+  u.pitch = 1.05;
+  // Try to find and use an English voice
+  function trySpeak() {
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(function(v) { return v.lang && v.lang.startsWith('en'); });
+    if (enVoice) u.voice = enVoice;
+    window.speechSynthesis.speak(u);
+  }
+  // Chrome loads voices asynchronously
+  if (window.speechSynthesis.getVoices().length > 0) {
+    trySpeak();
+  } else {
+    window.speechSynthesis.onvoiceschanged = function() {
+      window.speechSynthesis.onvoiceschanged = null;
+      trySpeak();
+    };
+    // Fallback: speak after a short delay even if voiceschanged hasn't fired
+    setTimeout(trySpeak, 200);
+  }
+}
+// Pre-load voices
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  if (window.speechSynthesis.onvoiceschanged !== null) {
+    window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
+  }
+}
+
+// ===================== NAVIGATION =====================
+let currentTab = 'home';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + tab);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  // Refresh content
+  if (tab === 'home') renderHome();
+  if (tab === 'learn' && !learnSession.active) startLearnSession(learnSession.category);
+  if (tab === 'challenge' && !challengeState.playing) showChallengeStart();
+  if (tab === 'progress') renderProgress();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.tab-item').forEach(btn => {
+  btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+});
+
+// ===================== HOME =====================
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return '早上好，小明';
+  if (h < 18) return '下午好，小明';
+  return '晚上好，小明';
+}
+
+function renderHome() {
+  document.getElementById('greeting-text').textContent = getGreeting();
+  document.getElementById('streak-text').textContent = '连续学习 ' + appState.streak + ' 天 🔥';
+
+  // Today's word: random unlearned, or random for review
+  const unlearned = WORDS.filter(w => !appState.learnedWords.includes(w.word));
+  const pool = unlearned.length > 0 ? unlearned : WORDS;
+  const todayWord = pool[Math.floor(Math.random() * pool.length)];
+  document.getElementById('home-emoji').textContent = todayWord.emoji;
+  document.getElementById('home-word').textContent = todayWord.word;
+  document.getElementById('home-phonetic').textContent = todayWord.phonetic;
+  document.getElementById('home-meaning').textContent = todayWord.meaning;
+
+  document.getElementById('home-speak-btn').onclick = function() { speakWord(todayWord.word); };
+  document.getElementById('home-start-learn').onclick = function() {
+    learnSession.category = null;
+    startLearnSession(null);
+    switchTab('learn');
+  };
+
+  // Category grid
+  const grid = document.getElementById('category-grid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const total = WORDS.filter(w => w.category === cat.key).length;
+    const learned = WORDS.filter(w => w.category === cat.key && appState.learnedWords.includes(w.word)).length;
+    const card = document.createElement('button');
+    card.className = 'category-card';
+    card.innerHTML = '<span style="font-size:32px;line-height:1;">' + cat.emoji + '</span>' +
+      '<span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary);text-align:center;white-space:nowrap;">' + cat.name + '</span>' +
+      '<span style="font-size:var(--text-xs);color:var(--color-text-tertiary);font-weight:var(--font-medium);white-space:nowrap;">' + learned + '/' + total + '</span>';
+    card.onclick = function() {
+      learnSession.category = cat.key;
+      startLearnSession(cat.key);
+      switchTab('learn');
+    };
+    grid.appendChild(card);
+  });
+}
+
+// ===================== LEARN MODE =====================
+const learnSession = { active: false, category: null, words: [], index: 0, step: 1, recalled: 0, forgot: 0 };
+
+function startLearnSession(category) {
+  let pool;
+  if (category) {
+    pool = WORDS.filter(w => w.category === category);
+  } else {
+    pool = [...WORDS];
+  }
+  // Shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  learnSession.words = pool;
+  learnSession.index = 0;
+  learnSession.active = true;
+  learnSession.category = category;
+  learnSession.step = 1;
+  learnSession.recalled = 0;
+  learnSession.forgot = 0;
+  document.getElementById('learn-step1').style.display = 'block';
+  document.getElementById('learn-step2').style.display = 'none';
+  document.getElementById('learn-complete').style.display = 'none';
+  renderLearnStep1();
+}
+
+function renderLearnStep1() {
+  const words = learnSession.words;
+  const idx = learnSession.index;
+  if (idx >= words.length) {
+    showLearnComplete();
+    return;
+  }
+  const w = words[idx];
+  document.getElementById('learn-s1-emoji').textContent = w.emoji;
+  document.getElementById('learn-s1-meaning').textContent = w.meaning;
+  document.getElementById('learn-s1-len').textContent = w.word.length;
+  document.getElementById('learn-s1-first').textContent = w.word[0].toUpperCase();
+  document.getElementById('learn-progress-text').textContent = (idx + 1) + '/' + words.length;
+  document.getElementById('learn-progress-bar').style.width = ((idx + 1) / words.length * 100) + '%';
+  // Show step1, hide step2
+  document.getElementById('learn-step1').style.display = 'block';
+  document.getElementById('learn-step2').style.display = 'none';
+}
+
+function renderLearnStep2() {
+  const words = learnSession.words;
+  const idx = learnSession.index;
+  if (idx >= words.length) {
+    showLearnComplete();
+    return;
+  }
+  const w = words[idx];
+  document.getElementById('learn-emoji').textContent = w.emoji;
+  document.getElementById('learn-word').textContent = w.word;
+  document.getElementById('learn-phonetic').textContent = w.phonetic;
+  document.getElementById('learn-meaning').textContent = w.meaning;
+  document.getElementById('learn-example-en').textContent = w.example_en;
+  document.getElementById('learn-example-cn').textContent = w.example_cn;
+  document.getElementById('learn-progress-text').textContent = (idx + 1) + '/' + words.length;
+  document.getElementById('learn-progress-bar').style.width = ((idx + 1) / words.length * 100) + '%';
+  // Hide step1, show step2
+  document.getElementById('learn-step1').style.display = 'none';
+  document.getElementById('learn-step2').style.display = 'block';
+  document.getElementById('learn-actions').style.display = 'flex';
+  // Auto-speak the word
+  setTimeout(function() { speakWord(w.word); }, 300);
+  // Record as learned
+  recordWordLearned(w.word);
+}
+
+function showLearnComplete() {
+  document.getElementById('learn-step1').style.display = 'none';
+  document.getElementById('learn-step2').style.display = 'none';
+  document.getElementById('learn-complete').style.display = 'block';
+  document.getElementById('learn-complete-summary').textContent =
+    '本轮学了 ' + learnSession.words.length + ' 个单词，记住 ' + learnSession.recalled + ' 个，需要复习 ' + learnSession.forgot + ' 个';
+}
+
+function goNextWord() {
+  learnSession.index++;
+  learnSession.step = 1;
+  renderLearnStep1();
+}
+
+// "我记住了" button
+document.getElementById('learn-reveal-btn').addEventListener('click', function() {
+  learnSession.recalled++;
+  learnSession.step = 2;
+  renderLearnStep2();
+});
+
+// "不认识" button
+document.getElementById('learn-forget-btn').addEventListener('click', function() {
+  learnSession.forgot++;
+  learnSession.step = 2;
+  renderLearnStep2();
+});
+
+document.getElementById('learn-next-btn').addEventListener('click', function() {
+  goNextWord();
+});
+
+document.getElementById('learn-easy-btn').addEventListener('click', function() {
+  const w = learnSession.words[learnSession.index];
+  recordWordMastered(w.word);
+  goNextWord();
+});
+
+document.getElementById('learn-back-btn').addEventListener('click', function() {
+  learnSession.active = false;
+  switchTab('home');
+});
+
+document.getElementById('learn-done-btn').addEventListener('click', function() {
+  learnSession.active = false;
+  switchTab('home');
+});
+
+document.getElementById('learn-speak-btn').addEventListener('click', function() {
+  const w = learnSession.words[learnSession.index];
+  if (w) speakWord(w.word);
+});
+
+// Home speak button is wired in renderHome()
+
+// Review button -> learn learned words only
+document.getElementById('btn-go-review').addEventListener('click', function() {
+  const learnedWords = WORDS.filter(w => appState.learnedWords.includes(w.word));
+  if (learnedWords.length === 0) {
+    alert('还没有学过的单词，先去学习吧！');
+    return;
+  }
+  for (let i = learnedWords.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [learnedWords[i], learnedWords[j]] = [learnedWords[j], learnedWords[i]];
+  }
+  learnSession.words = learnedWords;
+  learnSession.index = 0;
+  learnSession.active = true;
+  learnSession.category = null;
+  document.getElementById('learn-actions').style.display = 'flex';
+  document.getElementById('learn-complete').style.display = 'none';
+  switchTab('learn');
+  renderLearnCard();
+});
+
+// ===================== CHALLENGE MODE =====================
+const challengeState = {
+  playing: false,
+  selectedCategory: null,
+  questions: [],
+  currentQ: 0,
+  score: 0,
+  total: 10,
+  timerStart: 0,
+  timerInterval: null,
+  elapsedSeconds: 0,
+  // Current question state
+  tiles: [],
+  usedTileIndices: [],
+  answerSlots: [],
+  checking: false,
+  autoAdvanceTimer: null
+};
+
+function showChallengeStart() {
+  challengeState.playing = false;
+  challengeState.selectedCategory = 'all';
+  document.getElementById('challenge-start').style.display = 'block';
+  document.getElementById('challenge-play').style.display = 'none';
+  document.getElementById('challenge-result').style.display = 'none';
+
+  const list = document.getElementById('challenge-cat-list');
+  list.innerHTML = '';
+
+  // All words option
+  const allOpt = document.createElement('div');
+  allOpt.className = 'cat-option selected';
+  allOpt.dataset.cat = 'all';
+  allOpt.innerHTML = '<span style="font-size:28px;">📝</span><div><div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary);">全部单词</div><div style="font-size:var(--text-xs);color:var(--color-text-tertiary);">' + WORDS.length + '词</div></div>';
+  allOpt.onclick = function() { selectChallengeCategory('all'); };
+  list.appendChild(allOpt);
+
+  CATEGORIES.forEach(cat => {
+    const total = WORDS.filter(w => w.category === cat.key).length;
+    const opt = document.createElement('div');
+    opt.className = 'cat-option';
+    opt.dataset.cat = cat.key;
+    opt.innerHTML = '<span style="font-size:28px;">' + cat.emoji + '</span><div><div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary);">' + cat.name + '</div><div style="font-size:var(--text-xs);color:var(--color-text-tertiary);">' + total + '词</div></div>';
+    opt.onclick = function() { selectChallengeCategory(cat.key); };
+    list.appendChild(opt);
+  });
+
+  updateStartBtn();
+}
+
+function selectChallengeCategory(cat) {
+  challengeState.selectedCategory = cat;
+  document.querySelectorAll('.cat-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.cat === cat);
+  });
+  updateStartBtn();
+}
+
+function updateStartBtn() {
+  const btn = document.getElementById('challenge-start-btn');
+  if (challengeState.selectedCategory) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+document.getElementById('challenge-start-btn').addEventListener('click', startChallenge);
+document.getElementById('btn-go-challenge').addEventListener('click', function() {
+  showChallengeStart();
+  switchTab('challenge');
+});
+
+function startChallenge() {
+  const cat = challengeState.selectedCategory;
+  let pool = cat === 'all' ? [...WORDS] : WORDS.filter(w => w.category === cat);
+  // Shuffle and pick 10 (or fewer if not enough)
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  challengeState.questions = pool.slice(0, Math.min(10, pool.length));
+  challengeState.total = challengeState.questions.length;
+  challengeState.currentQ = 0;
+  challengeState.score = 0;
+  challengeState.playing = true;
+  challengeState.elapsedSeconds = 0;
+  if (challengeState.autoAdvanceTimer) { clearTimeout(challengeState.autoAdvanceTimer); challengeState.autoAdvanceTimer = null; }
+
+  document.getElementById('challenge-start').style.display = 'none';
+  document.getElementById('challenge-play').style.display = 'block';
+  document.getElementById('challenge-result').style.display = 'none';
+
+  // Start timer
+  challengeState.timerStart = Date.now();
+  if (challengeState.timerInterval) clearInterval(challengeState.timerInterval);
+  challengeState.timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+
+  renderChallengeQuestion();
+}
+
+function updateTimer() {
+  challengeState.elapsedSeconds = Math.floor((Date.now() - challengeState.timerStart) / 1000);
+  const m = Math.floor(challengeState.elapsedSeconds / 60);
+  const s = challengeState.elapsedSeconds % 60;
+  document.getElementById('challenge-timer').textContent = '⏱ ' + m + ':' + String(s).padStart(2, '0');
+}
+
+function renderChallengeQuestion() {
+  const q = challengeState.questions[challengeState.currentQ];
+  document.getElementById('challenge-qnum').textContent = '第 ' + (challengeState.currentQ + 1) + ' 题 / 共 ' + challengeState.total + ' 题';
+  document.getElementById('challenge-emoji').textContent = q.emoji;
+  document.getElementById('challenge-hint').textContent = q.meaning;
+  document.getElementById('challenge-feedback-area').style.display = 'none';
+
+  // Update stars display based on running score
+  const pct = challengeState.currentQ > 0 ? (challengeState.score / challengeState.currentQ) : 1;
+  let stars = 0;
+  if (pct >= 0.9) stars = 3; else if (pct >= 0.7) stars = 2; else if (pct >= 0.5) stars = 1;
+  document.getElementById('challenge-stars-display').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+
+  // Generate answer slots
+  const word = q.word.toLowerCase();
+  const letters = word.split('');
+  challengeState.answerSlots = new Array(letters.length).fill(null);
+  challengeState.usedTileIndices = [];
+  challengeState.checking = false;
+
+  // Generate tiles: correct letters + 2-3 random distractors
+  const extraCount = Math.min(3, Math.max(2, Math.floor(letters.length * 0.5)));
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  let distractors = [];
+  for (let i = 0; i < extraCount; i++) {
+    let ch;
+    do { ch = alphabet[Math.floor(Math.random() * 26)]; } while (letters.includes(ch) && letters.filter(l => l === ch).length <= distractors.filter(d => d === ch).length);
+    distractors.push(ch);
+  }
+  let allLetters = [...letters, ...distractors];
+  // Shuffle tiles
+  for (let i = allLetters.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allLetters[i], allLetters[j]] = [allLetters[j], allLetters[i]];
+  }
+  challengeState.tiles = allLetters.map((l, i) => ({ letter: l.toUpperCase(), used: false, index: i }));
+
+  renderSlots();
+  renderTiles();
+}
+
+function renderSlots() {
+  const container = document.getElementById('challenge-slots');
+  container.innerHTML = '';
+  challengeState.answerSlots.forEach((letter, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'answer-slot' + (letter ? ' filled' : '');
+    slot.textContent = letter || '';
+    slot.dataset.index = i;
+    slot.addEventListener('click', function() {
+      if (challengeState.checking) return;
+      if (letter !== null) {
+        // Remove letter from slot
+        const tileIdx = challengeState.usedTileIndices[i];
+        if (tileIdx !== undefined && challengeState.tiles[tileIdx]) {
+          challengeState.tiles[tileIdx].used = false;
+        }
+        challengeState.answerSlots[i] = null;
+        challengeState.usedTileIndices[i] = undefined;
+        renderSlots();
+        renderTiles();
+      }
+    });
+    container.appendChild(slot);
+  });
+}
+
+function renderTiles() {
+  const container = document.getElementById('challenge-tiles');
+  container.innerHTML = '';
+  // Adjust grid columns based on tile count
+  const count = challengeState.tiles.length;
+  container.style.gridTemplateColumns = 'repeat(' + Math.min(count, 6) + ', 1fr)';
+  challengeState.tiles.forEach((tile, i) => {
+    const el = document.createElement('button');
+    el.className = 'letter-tile' + (tile.used ? ' used' : '');
+    el.textContent = tile.letter;
+    // Random slight rotation for visual flair
+    const rot = (Math.random() - 0.5) * 4;
+    el.style.transform = 'rotate(' + rot + 'deg)';
+    el.addEventListener('click', function() {
+      if (challengeState.checking || tile.used) return;
+      // Find first empty slot
+      const emptyIdx = challengeState.answerSlots.indexOf(null);
+      if (emptyIdx === -1) return;
+      tile.used = true;
+      challengeState.answerSlots[emptyIdx] = tile.letter.toLowerCase();
+      challengeState.usedTileIndices[emptyIdx] = i;
+      renderSlots();
+      renderTiles();
+      // Check if all slots filled
+      if (!challengeState.answerSlots.includes(null)) {
+        checkAnswer();
+      }
+    });
+    container.appendChild(el);
+  });
+}
+
+function checkAnswer() {
+  challengeState.checking = true;
+  const q = challengeState.questions[challengeState.currentQ];
+  const correctWord = q.word.toLowerCase();
+  const playerWord = challengeState.answerSlots.join('');
+  const slots = document.querySelectorAll('#challenge-slots .answer-slot');
+
+  if (playerWord === correctWord) {
+    // Correct!
+    challengeState.score++;
+    recordWordMastered(q.word);
+    slots.forEach(s => s.classList.add('correct'));
+    const fb = document.getElementById('challenge-feedback-area');
+    fb.style.display = 'flex';
+    document.getElementById('challenge-feedback-text').className = 'feedback-text';
+    document.getElementById('challenge-feedback-text').textContent = '太棒了！✨';
+    document.getElementById('challenge-next-btn').textContent = challengeState.currentQ < challengeState.total - 1 ? '下一题' : '查看结果';
+    // Auto-advance after 1.5s
+    if (challengeState.autoAdvanceTimer) clearTimeout(challengeState.autoAdvanceTimer);
+    challengeState.autoAdvanceTimer = setTimeout(function() {
+      challengeState.autoAdvanceTimer = null;
+      if (!challengeState.playing) return;
+      challengeState.currentQ++;
+      if (challengeState.currentQ >= challengeState.total) {
+        endChallenge();
+      } else {
+        challengeState.checking = false;
+        renderChallengeQuestion();
+      }
+    }, 1500);
+  } else {
+    // Wrong
+    slots.forEach(s => s.classList.add('wrong'));
+    const fb = document.getElementById('challenge-feedback-area');
+    fb.style.display = 'flex';
+    document.getElementById('challenge-feedback-text').className = 'feedback-text wrong-fb';
+    document.getElementById('challenge-feedback-text').textContent = '再试试';
+    document.getElementById('challenge-next-btn').textContent = '下一题';
+    // Auto clear after shake
+    setTimeout(function() {
+      slots.forEach(s => { s.classList.remove('wrong'); });
+      challengeState.answerSlots = new Array(correctWord.length).fill(null);
+      challengeState.usedTileIndices = [];
+      challengeState.tiles.forEach(t => t.used = false);
+      challengeState.checking = false;
+      fb.style.display = 'none';
+      renderSlots();
+      renderTiles();
+    }, 1000);
+    return;
+  }
+}
+
+document.getElementById('challenge-next-btn').addEventListener('click', function() {
+  if (!challengeState.checking) return;
+  if (challengeState.autoAdvanceTimer) { clearTimeout(challengeState.autoAdvanceTimer); challengeState.autoAdvanceTimer = null; }
+  challengeState.currentQ++;
+  if (challengeState.currentQ >= challengeState.total) {
+    endChallenge();
+  } else {
+    challengeState.checking = false;
+    renderChallengeQuestion();
+  }
+});
+
+function endChallenge() {
+  challengeState.playing = false;
+  if (challengeState.timerInterval) clearInterval(challengeState.timerInterval);
+
+  const correct = challengeState.score;
+  const total = challengeState.total;
+  const pct = total > 0 ? correct / total : 0;
+  let stars = 0;
+  if (pct >= 0.9) stars = 3; else if (pct >= 0.7) stars = 2; else if (pct >= 0.5) stars = 1;
+
+  // Save result
+  appState.challengeHistory.push({
+    correct: correct, total: total,
+    time: challengeState.elapsedSeconds, stars: stars,
+    date: todayStr(),
+    category: challengeState.selectedCategory || 'all'
+  });
+  checkAchievements();
+  saveState(appState);
+
+  // Render result
+  document.getElementById('challenge-play').style.display = 'none';
+  document.getElementById('challenge-result').style.display = 'block';
+
+  // Stars
+  const starsEl = document.getElementById('result-stars');
+  starsEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement('span');
+    s.className = 'star' + (i < stars ? ' earned' : '');
+    s.textContent = i < stars ? '⭐' : '☆';
+    starsEl.appendChild(s);
+  }
+
+  const m = Math.floor(challengeState.elapsedSeconds / 60);
+  const s = challengeState.elapsedSeconds % 60;
+  document.getElementById('result-score').textContent = '正确 ' + correct + '/' + total;
+  document.getElementById('result-time').textContent = '用时 ' + m + ':' + String(s).padStart(2, '0');
+
+  if (stars === 3) document.getElementById('result-title').textContent = '太厉害了！';
+  else if (stars === 2) document.getElementById('result-title').textContent = '做得不错！';
+  else if (stars === 1) document.getElementById('result-title').textContent = '继续加油！';
+  else document.getElementById('result-title').textContent = '再接再厉！';
+}
+
+document.getElementById('result-retry-btn').addEventListener('click', function() {
+  startChallenge();
+});
+
+document.getElementById('result-home-btn').addEventListener('click', function() {
+  showChallengeStart();
+  switchTab('home');
+});
+
+// ===================== PROGRESS =====================
+function renderProgress() {
+  // Stats
+  document.getElementById('stat-learned').textContent = appState.learnedWords.length;
+  document.getElementById('stat-streak').innerHTML = appState.streak + '<span style="font-size:var(--text-sm);font-weight:var(--font-medium);">天</span>';
+
+  // Accuracy
+  let totalCorrect = 0, totalQuestions = 0;
+  appState.challengeHistory.forEach(h => { totalCorrect += h.correct; totalQuestions += h.total; });
+  const acc = totalQuestions > 0 ? Math.round(totalCorrect / totalQuestions * 100) : 0;
+  document.getElementById('stat-accuracy').innerHTML = acc + '<span style="font-size:var(--text-sm);font-weight:var(--font-medium);">%</span>';
+
+  // Word book progress
+  const wbContainer = document.getElementById('wordbook-progress');
+  wbContainer.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const total = WORDS.filter(w => w.category === cat.key).length;
+    const learned = WORDS.filter(w => w.category === cat.key && appState.learnedWords.includes(w.word)).length;
+    const pct = total > 0 ? Math.round(learned / total * 100) : 0;
+
+    const row = document.createElement('div');
+    row.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">' +
+        '<div style="display:flex;align-items:center;gap:6px;min-width:0;">' +
+          '<span style="font-size:18px;flex-shrink:0;">' + cat.emoji + '</span>' +
+          '<span style="font-size:var(--text-sm);color:var(--color-text-primary);font-weight:var(--font-medium);">' + cat.name + '</span>' +
+        '</div>' +
+        '<span style="font-size:var(--text-xs);color:var(--color-text-secondary);flex-shrink:0;">' + learned + '/' + total + '</span>' +
+      '</div>' +
+      '<div class="progress-track"><div class="progress-fill" data-width="' + pct + '"></div></div>';
+    wbContainer.appendChild(row);
+  });
+
+  // Animate progress bars
+  setTimeout(function() {
+    document.querySelectorAll('.progress-fill').forEach(function(el) {
+      var w = el.getAttribute('data-width');
+      if (w) el.style.width = w + '%';
+    });
+  }, 50);
+
+  // Achievement badges
+  const badgesGrid = document.getElementById('badges-grid');
+  badgesGrid.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const earned = appState.achievements.includes(a.id);
+    const item = document.createElement('div');
+    item.className = 'badge-item ' + (earned ? 'badge-earned' : 'badge-locked');
+    item.style.setProperty('--ring-color', a.ringColor);
+    item.title = a.desc;
+    if (earned) {
+      item.innerHTML =
+        '<div class="badge-circle"><span style="font-size:28px;">' + a.emoji + '</span></div>' +
+        '<span class="badge-label">' + a.name + '</span>';
+    } else {
+      item.innerHTML =
+        '<div class="badge-circle badge-circle-locked">' +
+          '<span style="font-size:28px;opacity:0.4;">' + a.emoji + '</span>' +
+          '<span style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;background:var(--color-text-tertiary);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;">' +
+            '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' +
+          '</span>' +
+        '</div>' +
+        '<span class="badge-label badge-label-locked">' + a.name + '</span>';
+    }
+    badgesGrid.appendChild(item);
+  });
+
+  // Weekly chart
+  const chartContainer = document.getElementById('weekly-chart');
+  chartContainer.innerHTML = '';
+  const dayNames = ['日','一','二','三','四','五','六'];
+  const today = new Date();
+  const todayDow = today.getDay();
+  // Last 7 days
+  let dailyData = [];
+  let maxVal = 1;
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    const count = appState.weeklyActivity[key] || 0;
+    if (count > maxVal) maxVal = count;
+    dailyData.push({ dayName: dayNames[d.getDay()], count: count, isToday: i === 0 });
+  }
+
+  dailyData.forEach(dd => {
+    const col = document.createElement('div');
+    col.className = 'chart-bar-col' + (dd.isToday ? ' chart-bar-col-today' : '');
+    const hPct = Math.max(4, (dd.count / maxVal) * 100);
+    col.innerHTML =
+      '<div class="chart-bar' + (dd.isToday ? ' chart-bar-today' : '') + '" data-height="' + hPct + '"></div>' +
+      '<span class="chart-day' + (dd.isToday ? ' chart-day-today' : '') + '">' + dd.dayName + '</span>';
+    chartContainer.appendChild(col);
+  });
+
+  // Animate chart bars
+  setTimeout(function() {
+    document.querySelectorAll('.chart-bar').forEach(function(el) {
+      var h = el.getAttribute('data-height');
+      if (h) el.style.height = h + '%';
+    });
+  }, 100);
+}
+
+// ===================== PWA SERVICE WORKER =====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      console.log('SW registered:', reg.scope);
+    }).catch(function(err) {
+      console.log('SW registration failed:', err);
+    });
+  });
+}
+
+// ===================== INIT =====================
+renderHome();
+</script>
+</body>
+</html>
