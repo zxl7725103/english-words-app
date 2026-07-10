@@ -808,38 +808,88 @@ function checkAchievements() {
 }
 
 // ===================== SPEECH =====================
+let voicesReady = false;
+let voicesList = [];
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function loadVoices() {
+  voicesList = window.speechSynthesis.getVoices();
+  if (voicesList.length > 0) voicesReady = true;
+}
+
 function speakWord(text) {
+  // Resume AudioContext on user gesture (required by mobile browsers)
+  try { getAudioCtx(); } catch(e) {}
+
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.8;
-  u.pitch = 1.05;
-  // Try to find and use an English voice
-  function trySpeak() {
-    const voices = window.speechSynthesis.getVoices();
-    const enVoice = voices.find(function(v) { return v.lang && v.lang.startsWith('en'); });
-    if (enVoice) u.voice = enVoice;
-    window.speechSynthesis.speak(u);
+
+  function doSpeak() {
+    loadVoices();
+    // If still no voices, retry once more after a delay
+    if (voicesList.length === 0) {
+      setTimeout(function() {
+        loadVoices();
+        speakNow(text);
+      }, 800);
+      return;
+    }
+    speakNow(text);
   }
-  // Chrome loads voices asynchronously
-  if (window.speechSynthesis.getVoices().length > 0) {
-    trySpeak();
+
+  function speakNow(text) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    u.pitch = 1.05;
+    u.volume = 1;
+    const enVoice = voicesList.find(function(v) { return v.lang && v.lang.startsWith('en'); });
+    if (enVoice) u.voice = enVoice;
+    // Chrome Android bug: speech can get stuck, set a timer to resume
+    window.speechSynthesis.speak(u);
+    var resumeTimer = setInterval(function() {
+      if (!window.speechSynthesis.speaking) {
+        clearInterval(resumeTimer);
+      } else {
+        window.speechSynthesis.resume();
+      }
+    }, 5000);
+  }
+
+  if (voicesReady) {
+    doSpeak();
   } else {
-    window.speechSynthesis.onvoiceschanged = function() {
+    var tried = false;
+    function onVoicesReady() {
+      if (tried) return;
+      tried = true;
       window.speechSynthesis.onvoiceschanged = null;
-      trySpeak();
-    };
-    // Fallback: speak after a short delay even if voiceschanged hasn't fired
-    setTimeout(trySpeak, 200);
+      loadVoices();
+      speakNow(text);
+    }
+    window.speechSynthesis.onvoiceschanged = onVoicesReady;
+    setTimeout(function() {
+      if (!tried) onVoicesReady();
+    }, 800);
   }
 }
-// Pre-load voices
+
+// Pre-load voices on page load
 if ('speechSynthesis' in window) {
-  window.speechSynthesis.getVoices();
-  if (window.speechSynthesis.onvoiceschanged !== null) {
-    window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
-  }
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = function() {
+    loadVoices();
+  };
 }
 
 // ===================== NAVIGATION =====================
@@ -980,8 +1030,8 @@ function renderLearnStep2() {
   document.getElementById('learn-step1').style.display = 'none';
   document.getElementById('learn-step2').style.display = 'block';
   document.getElementById('learn-actions').style.display = 'flex';
-  // Auto-speak the word
-  setTimeout(function() { speakWord(w.word); }, 300);
+  // Auto-speak the word after a short delay (requires user gesture context)
+  setTimeout(function() { speakWord(w.word); }, 500);
   // Record as learned
   recordWordLearned(w.word);
 }
