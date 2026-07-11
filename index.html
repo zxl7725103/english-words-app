@@ -1246,13 +1246,13 @@ function renderChallengeQuestion() {
   challengeState.usedTileIndices = [];
   challengeState.checking = false;
 
-  // Generate tiles: correct letters + 2-3 random distractors
-  const extraCount = Math.min(3, Math.max(2, Math.floor(letters.length * 0.5)));
+  // Generate tiles: correct letters + 2 random distractors
+  const extraCount = 2;
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   let distractors = [];
   for (let i = 0; i < extraCount; i++) {
     let ch;
-    do { ch = alphabet[Math.floor(Math.random() * 26)]; } while (letters.includes(ch) && letters.filter(l => l === ch).length <= distractors.filter(d => d === ch).length);
+    do { ch = alphabet[Math.floor(Math.random() * 26)]; } while (letters.includes(ch));
     distractors.push(ch);
   }
   let allLetters = [...letters, ...distractors];
