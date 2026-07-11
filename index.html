@@ -1193,6 +1193,15 @@ document.getElementById('btn-go-challenge').addEventListener('click', function()
 function startChallenge() {
   const cat = challengeState.selectedCategory;
   let pool = cat === 'all' ? [...WORDS] : WORDS.filter(w => w.category === cat);
+  // Filter: only single words, max 7 letters, deduplicate by word
+  var seen = {};
+  pool = pool.filter(function(w) {
+    var key = w.word.toLowerCase().replace(/[\s-]/g, '');
+    if (key.length > 7) return false;
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
   // Shuffle and pick 10 (or fewer if not enough)
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
