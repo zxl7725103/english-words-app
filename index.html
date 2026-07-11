@@ -1246,16 +1246,8 @@ function renderChallengeQuestion() {
   challengeState.usedTileIndices = [];
   challengeState.checking = false;
 
-  // Generate tiles: correct letters + 2 random distractors
-  const extraCount = 2;
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  let distractors = [];
-  for (let i = 0; i < extraCount; i++) {
-    let ch;
-    do { ch = alphabet[Math.floor(Math.random() * 26)]; } while (letters.includes(ch));
-    distractors.push(ch);
-  }
-  let allLetters = [...letters, ...distractors];
+  // Generate tiles: only the correct letters, shuffled (no distractors for kids)
+  let allLetters = [...letters];
   // Shuffle tiles
   for (let i = allLetters.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
