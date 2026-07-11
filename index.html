@@ -205,13 +205,14 @@ body {
 
 /* ========== CHALLENGE PAGE ========== */
 .answer-slot {
-  width: 48px; height: 48px; border-radius: var(--radius-md);
+  width: 40px; height: 40px; border-radius: var(--radius-md);
   border: 2px dashed var(--color-border);
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--font-bold);
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--font-bold);
   color: var(--color-text-primary);
   transition: transform 200ms cubic-bezier(.3,0,0,1), background-color 200ms ease, border-color 200ms ease;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .answer-slot.filled {
   border: 2px solid var(--color-primary); background: var(--color-primary-lightest);
@@ -223,10 +224,10 @@ body {
 @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
 
 .letter-tile {
-  width: 48px; height: 48px; border-radius: var(--radius-md);
+  width: 40px; height: 40px; border-radius: var(--radius-md);
   background: var(--color-surface); box-shadow: var(--shadow-md);
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--font-bold);
+  font-family: var(--font-display); font-size: var(--text-lg); font-weight: var(--font-bold);
   color: var(--color-text-primary); cursor: pointer; border: none;
   transition: transform 160ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease;
 }
@@ -488,9 +489,11 @@ body {
   <div id="challenge-play" style="display:none;">
     <section style="padding:var(--space-5) var(--space-4) var(--space-2);">
       <div style="display:flex;align-items:center;justify-content:space-between;">
-        <span id="challenge-qnum" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;">第 1 题 / 共 10 题</span>
-        <span id="challenge-timer" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;">⏱ 0:00</span>
-        <span id="challenge-stars-display" style="font-size:var(--text-sm);color:var(--color-accent-warm);white-space:nowrap;">⭐⭐⭐</span>
+        <span id="challenge-qnum" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;">第 1 题 / 共 10 题</span>
+        <div style="display:flex;align-items:center;gap:var(--space-3);flex-shrink:0;">
+          <span id="challenge-timer" style="font-size:var(--text-sm);color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap;">⏱ 0:00</span>
+          <span id="challenge-stars-display" style="font-size:var(--text-sm);color:var(--color-accent-warm);white-space:nowrap;">⭐⭐⭐</span>
+        </div>
       </div>
     </section>
     <section style="padding:var(--space-2) var(--space-4) var(--space-4);">
@@ -500,10 +503,10 @@ body {
       </div>
     </section>
     <section style="padding:var(--space-3) var(--space-4);">
-      <div id="challenge-slots" style="display:flex;justify-content:center;gap:var(--space-3);flex-wrap:wrap;"></div>
+      <div id="challenge-slots" style="display:flex;justify-content:center;gap:var(--space-2);flex-wrap:wrap;"></div>
     </section>
     <section style="padding:var(--space-4) var(--space-4);">
-      <div id="challenge-tiles" style="display:grid;max-width:260px;margin:0 auto;grid-template-columns:repeat(5,1fr);gap:var(--space-3);justify-items:center;"></div>
+      <div id="challenge-tiles" style="display:grid;max-width:320px;margin:0 auto;grid-template-columns:repeat(5,1fr);gap:var(--space-2);justify-items:center;"></div>
     </section>
     <section id="challenge-feedback-area" style="display:none;flex-direction:column;align-items:center;gap:var(--space-4);padding:var(--space-6) var(--space-4) var(--space-4);">
       <p id="challenge-feedback-text" class="feedback-text">太棒了！✨</p>
