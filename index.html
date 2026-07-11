@@ -1239,8 +1239,8 @@ function renderChallengeQuestion() {
   if (pct >= 0.9) stars = 3; else if (pct >= 0.7) stars = 2; else if (pct >= 0.5) stars = 1;
   document.getElementById('challenge-stars-display').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
 
-  // Generate answer slots
-  const word = q.word.toLowerCase();
+  // Generate answer slots from word (remove spaces/hyphens for spelling)
+  const word = q.word.toLowerCase().replace(/[\s-]/g, '');
   const letters = word.split('');
   challengeState.answerSlots = new Array(letters.length).fill(null);
   challengeState.usedTileIndices = [];
@@ -1320,7 +1320,7 @@ function renderTiles() {
 function checkAnswer() {
   challengeState.checking = true;
   const q = challengeState.questions[challengeState.currentQ];
-  const correctWord = q.word.toLowerCase();
+  const correctWord = q.word.toLowerCase().replace(/[\s-]/g, '');
   const playerWord = challengeState.answerSlots.join('');
   const slots = document.querySelectorAll('#challenge-slots .answer-slot');
 
