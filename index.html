@@ -418,7 +418,8 @@ body {
           <div style="margin-bottom:var(--space-4);line-height:1;">
             <span id="learn-s1-emoji" style="font-size:80px;">🍎</span>
           </div>
-          <p id="learn-s1-meaning" style="font-size:var(--text-2xl);font-weight:var(--font-semibold);color:var(--color-text-primary);margin-bottom:var(--space-6);">苹果</p>
+          <p id="learn-s1-meaning" style="font-size:var(--text-2xl);font-weight:var(--font-semibold);color:var(--color-text-primary);">苹果</p>
+          <p id="learn-s1-phonetic" style="font-size:var(--text-base);color:var(--color-text-tertiary);margin-top:var(--space-1);margin-bottom:var(--space-6);">/ˈæp.əl/</p>
           <div style="background:var(--color-primary-lightest);border-radius:var(--radius-md);padding:var(--space-6);margin-bottom:var(--space-4);">
             <p style="font-size:var(--text-sm);color:var(--color-primary-dark);font-weight:var(--font-medium);text-align:center;">这个单词怎么拼？</p>
             <p id="learn-s1-hint" style="font-size:var(--text-xs);color:var(--color-text-tertiary);text-align:center;margin-top:var(--space-2);">提示：共 <span id="learn-s1-len">5</span> 个字母，首字母 <span id="learn-s1-first">a</span></p>
@@ -1008,6 +1009,7 @@ function renderLearnStep1() {
   const w = words[idx];
   document.getElementById('learn-s1-emoji').textContent = w.emoji;
   document.getElementById('learn-s1-meaning').textContent = w.meaning;
+  document.getElementById('learn-s1-phonetic').textContent = w.phonetic;
   document.getElementById('learn-s1-len').textContent = w.word.length;
   document.getElementById('learn-s1-first').textContent = w.word[0].toUpperCase();
   document.getElementById('learn-progress-text').textContent = (idx + 1) + '/' + words.length;
