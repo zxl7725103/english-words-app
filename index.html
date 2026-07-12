@@ -460,6 +460,7 @@ body {
 
       <div id="learn-actions" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
         <button class="cta-primary" id="learn-next-btn">下一个单词</button>
+        <button class="cta-button-secondary" id="learn-spell-btn" style="max-width:240px;width:100%;">拼一下这个单词</button>
         <button class="link-secondary" id="learn-easy-btn">太简单了</button>
       </div>
     </div>
@@ -1083,6 +1084,34 @@ document.getElementById('learn-easy-btn').addEventListener('click', function() {
   goNextWord();
 });
 
+// "拼一下这个单词" - single word challenge from learn mode
+document.getElementById('learn-spell-btn').addEventListener('click', function() {
+  const w = learnSession.words[learnSession.index];
+  if (!w) return;
+  // Set up a mini challenge with just this one word
+  challengeState.questions = [w];
+  challengeState.total = 1;
+  challengeState.currentQ = 0;
+  challengeState.score = 0;
+  challengeState.playing = true;
+  challengeState.elapsedSeconds = 0;
+  challengeState.selectedCategory = w.category;
+  if (challengeState.autoAdvanceTimer) { clearTimeout(challengeState.autoAdvanceTimer); challengeState.autoAdvanceTimer = null; }
+  // Mark that we came from learn mode
+  challengeState.returnToLearn = true;
+
+  switchTab('challenge');
+  document.getElementById('challenge-start').style.display = 'none';
+  document.getElementById('challenge-play').style.display = 'block';
+  document.getElementById('challenge-result').style.display = 'none';
+
+  challengeState.timerStart = Date.now();
+  if (challengeState.timerInterval) clearInterval(challengeState.timerInterval);
+  challengeState.timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+  renderChallengeQuestion();
+});
+
 document.getElementById('learn-back-btn').addEventListener('click', function() {
   learnSession.active = false;
   switchTab('home');
@@ -1461,12 +1490,36 @@ function endChallenge() {
 }
 
 document.getElementById('result-retry-btn').addEventListener('click', function() {
-  startChallenge();
+  if (challengeState.returnToLearn && learnSession.active) {
+    // Re-spell the same word
+    challengeState.returnToLearn = true;
+    challengeState.currentQ = 0;
+    challengeState.score = 0;
+    challengeState.elapsedSeconds = 0;
+    challengeState.playing = true;
+    if (challengeState.autoAdvanceTimer) { clearTimeout(challengeState.autoAdvanceTimer); challengeState.autoAdvanceTimer = null; }
+    document.getElementById('challenge-start').style.display = 'none';
+    document.getElementById('challenge-play').style.display = 'block';
+    document.getElementById('challenge-result').style.display = 'none';
+    challengeState.timerStart = Date.now();
+    if (challengeState.timerInterval) clearInterval(challengeState.timerInterval);
+    challengeState.timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+    renderChallengeQuestion();
+  } else {
+    startChallenge();
+  }
 });
 
 document.getElementById('result-home-btn').addEventListener('click', function() {
-  showChallengeStart();
-  switchTab('home');
+  if (challengeState.returnToLearn && learnSession.active) {
+    // Return to learn mode where we left off
+    challengeState.returnToLearn = false;
+    switchTab('learn');
+  } else {
+    showChallengeStart();
+    switchTab('home');
+  }
 });
 
 // ===================== PROGRESS =====================
