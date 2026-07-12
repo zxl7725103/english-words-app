@@ -866,12 +866,18 @@ function speakWord(text) {
 
   function speakNow(text) {
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    u.rate = 0.8;
-    u.pitch = 1.05;
+    u.lang = 'en-GB';
+    u.rate = 0.85;
+    u.pitch = 1.0;
     u.volume = 1;
-    const enVoice = voicesList.find(function(v) { return v.lang && v.lang.startsWith('en'); });
-    if (enVoice) u.voice = enVoice;
+    // Prefer British English voice
+    var gbVoice = voicesList.find(function(v) { return v.lang && v.lang.startsWith('en-GB'); });
+    if (gbVoice) {
+      u.voice = gbVoice;
+    } else {
+      var enVoice = voicesList.find(function(v) { return v.lang && v.lang.startsWith('en'); });
+      if (enVoice) u.voice = enVoice;
+    }
     // Chrome Android bug: speech can get stuck, set a timer to resume
     window.speechSynthesis.speak(u);
     var resumeTimer = setInterval(function() {
