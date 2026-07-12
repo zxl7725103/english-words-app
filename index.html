@@ -1391,9 +1391,14 @@ document.getElementById('challenge-show-answer-btn').addEventListener('click', f
   var q = challengeState.questions[challengeState.currentQ];
   if (!q) return;
   var revealEl = document.getElementById('challenge-answer-reveal');
+  var btnEl = this;
   revealEl.textContent = q.word;
   revealEl.style.display = 'block';
-  this.style.display = 'none';
+  btnEl.style.display = 'none';
+  setTimeout(function() {
+    revealEl.style.display = 'none';
+    btnEl.style.display = 'inline';
+  }, 3000);
 });
 
 document.getElementById('challenge-next-btn').addEventListener('click', function() {
