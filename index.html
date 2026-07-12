@@ -454,7 +454,13 @@ body {
       </div>
 
       <div style="background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-8);box-shadow:var(--shadow-card);">
-        <p id="learn-example-en" style="font-size:var(--text-base);color:var(--color-text-primary);line-height:var(--leading-relaxed);">I eat an 🍎 apple every day.</p>
+        <div style="display:flex;align-items:flex-start;gap:var(--space-3);">
+          <p id="learn-example-en" style="font-size:var(--text-base);color:var(--color-text-primary);line-height:var(--leading-relaxed);flex:1;">I eat an 🍎 apple every day.</p>
+          <button id="learn-example-speak-btn" class="audio-btn" aria-label="朗读例句" style="flex-shrink:0;width:36px;height:36px;min-width:36px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:relative;z-index:1;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <span class="audio-pulse-ring"></span>
+          </button>
+        </div>
         <p id="learn-example-cn" style="margin-top:var(--space-2);font-size:var(--text-sm);color:var(--color-text-secondary);line-height:var(--leading-relaxed);">我每天吃一个苹果。</p>
       </div>
 
@@ -1127,6 +1133,11 @@ document.getElementById('learn-done-btn').addEventListener('click', function() {
 document.getElementById('learn-speak-btn').addEventListener('click', function() {
   const w = learnSession.words[learnSession.index];
   if (w) speakWord(w.word);
+});
+
+document.getElementById('learn-example-speak-btn').addEventListener('click', function() {
+  const w = learnSession.words[learnSession.index];
+  if (w) speakWord(w.example_en.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').replace(/\s+/g, ' ').trim());
 });
 
 // Home speak button is wired in renderHome()
